@@ -120,7 +120,7 @@ public class TweetKit: NSObject {
         }
         
         var request = URLRequest(url:url)
-        print("URL:::Copyright © 2017 Bharat Byan::: \(url)")
+//        print("URL:::Copyright © 2017 Bharat Byan::: \(url)")
         request.httpMethod = "GET"
         
         self.sendApplicationOnlyRequest(request) { (data, response, error) in
