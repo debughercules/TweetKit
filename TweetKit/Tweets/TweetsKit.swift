@@ -112,30 +112,22 @@ public class TweetKit: NSObject {
      - parameter completion: completion block returning an array of tweets (dictionaries), will be empty if none found. Will be nil if unsuccessful.
      NOTE: For this coding challenge the response is just the raw dictionary. In a more refined SDK it makes sense to define a custom class that holds all data relevant to a tweet. See TwitterKit.
      */
-    public static func getTweets(withSearchTerm searchTerm:String, _ completion:@escaping (_ tweets:[[String:Any]]?) -> Void) {
+    public static func getTweets(withSearchTerm searchTerm:String, location:String, recent:String, _ completion:@escaping (_ tweets:Any?) -> Void) {
         guard let searchTerm = searchTerm.replacingOccurrences(of: " ", with: "").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            let url = URL(string: "\(apiHostUrl)1.1/search/tweets.json?q=%23\(searchTerm)") else {
+            let url = URL(string: "\(apiHostUrl)1.1/search/tweets.json?q=%23\(searchTerm)\(location)\(recent)") else {
                 completion(nil)
                 return
         }
         
         var request = URLRequest(url:url)
-        
+        print("URL:::Copyright © 2017 Bharat Byan::: \(url)")
         request.httpMethod = "GET"
         
         self.sendApplicationOnlyRequest(request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data {
                 
-                if let dataObj = try? JSONSerialization.jsonObject(with: data, options: []) {
-                    
-                    if let dataDict = dataObj as? [String:Any],
-                        let statuses = dataDict["statuses"] as? [[String:Any]] {
-                        
-                        completion(statuses)
-                        return
-                    }
-                    
-                }
+                completion(data)
+                return
             }
             
             completion(nil)
